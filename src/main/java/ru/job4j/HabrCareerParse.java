@@ -7,7 +7,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class HabrCareerParse {
 
@@ -17,18 +16,20 @@ public class HabrCareerParse {
 
     public static void main(String[] args) throws IOException {
         HabrCareerDateTimeParser parser = new HabrCareerDateTimeParser();
-        Connection connection = Jsoup.connect(PAGE_LINK);
-        Document document = connection.get();
-        Elements rows = document.select(".vacancy-card__inner");
-        rows.forEach(row -> {
-            Element titleElement = row.select(".vacancy-card__title").first();
-            Element linkElement = titleElement.child(0);
-            String vacancyName = titleElement.text();
-            String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
-            Element titleElementDate = row.select(".vacancy-card__date").first();
-            Element linkElementDate = titleElementDate.child(0);
-            String date = String.format(linkElementDate.attr("datetime"));
-            System.out.printf("%s %s %s %s%n", vacancyName, link, date, parser.parse(date));
-        });
+        for (int i = 1; i <= 5; i++) {
+            Connection connection = Jsoup.connect(PAGE_LINK + "?page=" + i);
+            Document document = connection.get();
+            Elements rows = document.select(".vacancy-card__inner");
+            rows.forEach(row -> {
+                Element titleElement = row.select(".vacancy-card__title").first();
+                Element linkElement = titleElement.child(0);
+                String vacancyName = titleElement.text();
+                String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
+                Element titleElementDate = row.select(".vacancy-card__date").first();
+                Element linkElementDate = titleElementDate.child(0);
+                String date = String.format(linkElementDate.attr("datetime"));
+                System.out.printf("%s %s %s %s%n", vacancyName, link, date, parser.parse(date));
+            });
+        }
     }
 }
