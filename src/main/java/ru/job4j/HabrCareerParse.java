@@ -7,13 +7,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class HabrCareerParse implements Parse {
 
     private static final String SOURCE_LINK = "https://career.habr.com";
-    private static final String PAGE_LINK = String.format("%s/vacancies/java_developer?page=", SOURCE_LINK);
     private static final int COUNT_PAGE = 1;
     private final DateTimeParser dateTimeParser;
 
@@ -64,24 +65,6 @@ public class HabrCareerParse implements Parse {
             }
         }
         return listPost;
-    }
-
-    public static void main(String[] args) {
-        HabrCareerDateTimeParser habrCareerDateTimeParser = new HabrCareerDateTimeParser();
-        HabrCareerParse habrCareerParse = new HabrCareerParse(habrCareerDateTimeParser);
-        MemStore memStore = new MemStore();
-        String link = PAGE_LINK;
-        List<Post> list = habrCareerParse.list(link);
-        for (Post post: list) {
-            memStore.save(post);
-        }
-        List<Post> listNew = memStore.getAll();
-        Post postList = listNew.get(0);
-        Post post = list.get(0);
-        Post postNew = memStore.findById(post.getId());
-        System.out.println("сравнение");
-        System.out.println(post.equals(postNew));
-        System.out.println(post.equals(postList));
     }
 }
 

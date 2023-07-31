@@ -95,34 +95,4 @@ public class PsqlStore implements Store, AutoCloseable {
             cnn.close();
         }
     }
-
-    static Properties getProperties() {
-        Properties properties = new Properties();
-        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
-            properties.load(in);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        return properties;
-    }
-    /*test*/
-    public static void main(String[] args) throws Exception {
-        Properties pr = getProperties();
-        Post post = new Post("Системный аналитик (Микросервисы)",
-                "https://career.habr.com/vacancies/1000111462",
-                "ЕМ ПРЕДСТОИТ ЗАНИМАТЬСЯ",
-                LocalDateTime.parse("2022-09-28T12:06:56")
-        );
-
-        try (PsqlStore psqlStore = new PsqlStore(pr)) {
-            psqlStore.save(post);
-            List<Post> list = psqlStore.getAll();
-            System.out.println(list.get(0));
-            Post post1 = psqlStore.findById(1);
-            System.out.println(post1);
-        }
-        catch (IOException e) {
-            System.out.println(e);
-        }
-    }
 }
