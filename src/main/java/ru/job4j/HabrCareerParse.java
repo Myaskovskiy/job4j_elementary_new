@@ -7,10 +7,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class HabrCareerParse implements Parse {
 
@@ -24,7 +22,7 @@ public class HabrCareerParse implements Parse {
 
     private String retrieveDescription(String link) {
         Connection connection = Jsoup.connect(link);
-        Document document = null;
+        Document document;
         try {
             document = connection.get();
         } catch (IOException e) {
@@ -43,8 +41,7 @@ public class HabrCareerParse implements Parse {
         Element linkElementDate = titleElementDate.child(0);
         String date = String.format(linkElementDate.attr("datetime"));
         String descr = retrieveDescription(linkVacancy);
-        Post post = new Post(vacancyName, linkVacancy, descr, this.dateTimeParser.parse(date));
-        return post;
+        return new Post(vacancyName, linkVacancy, descr, this.dateTimeParser.parse(date));
     }
 
     @Override
@@ -52,7 +49,7 @@ public class HabrCareerParse implements Parse {
         List<Post> listPost = new ArrayList<>();
         for (int i = 1; i <= COUNT_PAGE; i++) {
             Connection connection = Jsoup.connect(link + i);
-            Document document = null;
+            Document document;
             try {
                 document = connection.get();
             } catch (IOException e) {
