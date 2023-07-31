@@ -3,7 +3,6 @@ package ru.job4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
@@ -52,22 +51,16 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
 
-            /* TODO impl logic */
-
-            String link = PAGE_LINK;
             try {
-                List<Post> list = parse.list(link);
+                List<Post> list = parse.list(PAGE_LINK);
                 for (Post post: list) {
                     store.save(post);
                 }
-                System.out.println(list.get(0) + " " + list.size());
-                System.out.println(store.findById(1));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
 
     public static void main(String[] args) throws Exception {
         var cfg = new Properties();
