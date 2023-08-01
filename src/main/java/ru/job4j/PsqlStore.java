@@ -1,16 +1,13 @@
 package ru.job4j;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
 
-    private Connection cnn;
+    private final Connection cnn;
 
     public PsqlStore(Properties cfg) throws SQLException {
         try {
@@ -79,14 +76,13 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public Post getPost(ResultSet resultSet) throws SQLException {
-        Post post = new Post(
+        return new Post(
                 resultSet.getInt("id"),
                 resultSet.getString("name"),
                 resultSet.getString("text"),
                 resultSet.getString("link"),
                 resultSet.getTimestamp("created").toLocalDateTime()
         );
-        return post;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class HabrCareerParse implements Parse {
         Element linkElementDate = titleElementDate.child(0);
         String date = String.format(linkElementDate.attr("datetime"));
         String descr = retrieveDescription(linkVacancy);
-        return new Post(vacancyName, linkVacancy, descr, this.dateTimeParser.parse(date));
+        return new Post(vacancyName, descr, linkVacancy, this.dateTimeParser.parse(date));
     }
 
     @Override
