@@ -50,8 +50,7 @@ create or replace function nalogRow()
     returns trigger as
 $$
     BEGIN
-        update products
-        set price = price + price * 0.2;      
+        new.price = new.price + new.price * 0.2	;
         return NEW;
     END;
 $$
