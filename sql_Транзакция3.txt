@@ -1,0 +1,166 @@
+postgres=# drop table books;
+DROP TABLE
+postgres=# select * from books;
+ОШИБКА:  отношение "books" не существует
+СТРОКА 1: select * from books;
+                        ^
+postgres=# create table books
+postgres-# (
+postgres(#     id       serial primary key,
+postgres(#     name     varchar(50),
+postgres(#     count    integer default 0,
+postgres(#     price    integer
+postgres(# );
+CREATE TABLE
+postgres=#
+postgres=# insert into books (name, count, price)
+postgres-# VALUES ('book_1', 3, 50);
+INSERT 0 1
+postgres=# insert into books (name, count, price)
+postgres-# VALUES ('book_2', 15, 32);
+INSERT 0 1
+postgres=# insert into books (name, count, price)
+postgres-# VALUES ('book_3', 8, 115);
+INSERT 0 1
+postgres=# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+(3 ёЄЁюъш)
+
+
+postgres=# begin transaction;
+BEGIN
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+(3 ёЄЁюъш)
+
+
+postgres=*# insert into books (name, count, price)
+postgres-*# VALUES ('book_4', 8, 100);
+INSERT 0 1
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+(4 ёЄЁюъш)
+
+
+postgres=*# savepoint savepoint_1;
+SAVEPOINT
+postgres=*# insert into books (name, count, price) VALUES ('book_5', 8, 200);
+INSERT 0 1
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+  5 | book_5 |     8 |   200
+(5 ёЄЁюъ)
+
+
+postgres=*# savepoint savepoint_2;
+SAVEPOINT
+postgres=*# insert into books (name, count, price) VALUES ('book_6', 8, 300);
+INSERT 0 1
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+  5 | book_5 |     8 |   200
+  6 | book_6 |     8 |   300
+(6 ёЄЁюъ)
+
+
+postgres=*# rollback to savepoint_2
+postgres-*# select * from books;
+ОШИБКА:  ошибка синтаксиса (примерное положение: "select")
+СТРОКА 2: select * from books;
+          ^
+postgres=!# rollback to savepoint_2;
+ROLLBACK
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+  5 | book_5 |     8 |   200
+(5 ёЄЁюъ)
+
+
+postgres=*# insert into books (name, count, price) VALUES ('book_6', 8, 300);
+INSERT 0 1
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+  5 | book_5 |     8 |   200
+  7 | book_6 |     8 |   300
+(6 ёЄЁюъ)
+
+
+postgres=*# rollback to savepoint_1;
+ROLLBACK
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+(4 ёЄЁюъш)
+
+
+postgres=*# insert into books (name, count, price) VALUES ('book_5', 8, 200);
+INSERT 0 1
+postgres=*# insert into books (name, count, price) VALUES ('book_6', 8, 300);
+INSERT 0 1
+postgres=*# insert into books (name, count, price) VALUES ('book_6', 8, 400);
+INSERT 0 1
+postgres=*# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+  8 | book_5 |     8 |   200
+  9 | book_6 |     8 |   300
+ 10 | book_6 |     8 |   400
+(7 ёЄЁюъ)
+
+
+postgres=*# rollback to savepoint_1;
+ROLLBACK
+postgres=*# commit;
+COMMIT
+postgres=# select * from books;
+ id |  name  | count | price
+----+--------+-------+-------
+  1 | book_1 |     3 |    50
+  2 | book_2 |    15 |    32
+  3 | book_3 |     8 |   115
+  4 | book_4 |     8 |   100
+(4 ёЄЁюъш)
+
+
+postgres=#

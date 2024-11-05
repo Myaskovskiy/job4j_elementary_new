@@ -1,0 +1,74 @@
+drop table books;
+
+create table books
+(
+    id       serial primary key,
+    name     varchar(50),
+    count    integer default 0,
+    price    integer
+);
+
+insert into books (name, count, price)
+VALUES ('book_1', 3, 50);
+insert into books (name, count, price)
+VALUES ('book_2', 15, 32);
+insert into books (name, count, price)
+VALUES ('book_3', 8, 115);
+
+begin transaction;
+set session transaction isolation level read uncommitted;
+set session transaction isolation level read committed;
+
+insert into books (name, count, price) VALUES ('book_4', 11, 64);
+
+
+drop table books;
+
+create table books
+(
+    id       serial primary key,
+    name     varchar(50),
+    count    integer default 0,
+    price    integer
+);
+
+insert into books (name, count, price)
+VALUES ('book_1', 3, 50);
+insert into books (name, count, price)
+VALUES ('book_2', 15, 32);
+insert into books (name, count, price)
+VALUES ('book_3', 8, 115);
+
+begin transaction;
+
+
+insert into books (name, count, price)
+VALUES ('book_4', 8, 100);
+
+savepoint savepoint_1;
+
+insert into books (name, count, price) VALUES ('book_5', 8, 200);
+
+savepoint savepoint_2;
+
+insert into books (name, count, price) VALUES ('book_6', 8, 300);
+
+select * from books;
+
+rollback to savepoint_2;
+
+select * from books;
+
+insert into books (name, count, price) VALUES ('book_6', 8, 300);
+
+rollback to savepoint_1;
+
+select * from books;
+
+insert into books (name, count, price) VALUES ('book_5', 8, 200);
+insert into books (name, count, price) VALUES ('book_6', 8, 300);
+insert into books (name, count, price) VALUES ('book_6', 8, 400);
+
+rollback to savepoint_1;
+
+commit;
